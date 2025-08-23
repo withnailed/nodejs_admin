@@ -3,14 +3,14 @@ var router = express.Router();
 const Response = require('../lib/Response');
 const CustomError = require('../lib/Error');
 const Enum = require('../config/Enum');
-const AuditLogs = require('../db/models/AuditLogs');
+const RolePrivileges = require('../db/models/RolePrivileges');
 
 
 router.get('/', async (req, res, next) => {
 
     try {
-        let auditLogs = await AuditLogs.find({});
-        res.json(Response.successResponse(auditLogs));
+        let rolePrivileges = await RolePrivileges.find({});
+        res.json(Response.successResponse(rolePrivileges));
     } catch (error) {
         let errorResponse = Response.errorResponse(error);
         res.status(errorResponse.code).json(errorResponse);
@@ -22,13 +22,13 @@ router.post('/add', async (req, res) => {
     try {
 
         if (!body.name) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, "validation error", "Name is required");
-        let auditLog = new AuditLogs({
+        let rolePrivileges = new RolePrivileges({
             name: body.name,
             created_by: req.user._id,
             is_active: true
         });
 
-        await auditLog.save();
+        await rolePrivileges.save();
 
         res.json(Response.successResponse({ success: true }));
 
@@ -46,7 +46,7 @@ router.post('/update', async (req, res) => {
         let updates = {};
         if (body.name) updates.name = body.name;
         if (typeof body.is_active === "boolean") updates.is_active = body.is_active;
-        await AuditLogs.updateOne({ _id: body.id }, updates);
+        await RolePrivileges.updateOne({ _id: body.id }, updates);
         res.json(Response.successResponse({ success: true }));
     }
     catch (error) {
@@ -59,12 +59,13 @@ router.post('/delete', async (req, res) => {
     let body = req.body;
     try {
         if (!body.id) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, "validation error", "ID is required");
-        await AuditLogs.remove({ _id: body.id });
+        await RolePrivileges.remove({ _id: body.id });
         res.json(Response.successResponse({ success: true }));
     } catch (error) {
         let errorResponse = Response.errorResponse(error);
         res.status(errorResponse.code).json(Response.errorResponse(error));
     }
 });
+
 module.exports = router;
 

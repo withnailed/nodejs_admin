@@ -1,6 +1,5 @@
 const e = require('express');
 const mongoose = require('mongoose');
-const { use } = require('react');
 const schema = mongoose.Schema({
     role_id: {
         type: mongoose.Schema.Types.ObjectId,
@@ -15,8 +14,8 @@ const schema = mongoose.Schema({
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
 });
 
-class RolePrivileges extends mongoose.Model {
+class UserRoles extends mongoose.Model {
 
 }
-schema.loadClass(RolePrivileges);
-module.exports = mongoose.model('role_privileges', schema);
+schema.loadClass(UserRoles);
+module.exports = mongoose.model('user_roles', schema);
